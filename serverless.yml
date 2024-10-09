@@ -1,0 +1,45 @@
+frameworkVersion: "4.4.4"
+service: scrapping-token
+app: pull-panda-cloud-cases
+
+plugins:
+  - serverless-offline
+  # - serverless-plugin-chrome
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: sa-east-1
+  stage: serverless
+  profile: pull_panda_cloud_cases
+  memorySize: 2048
+
+functions:
+  health-check:
+    handler: src/handlers/health-check-handler.handlerFunc
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+  # scrapping:
+  #   handler: src/handlers/scrapping-token-handler.handlerFunc
+  #   events:
+  #     - httpApi:
+  #         path: /scrapping
+  #         method: get
+  #     - schedule:
+  #         rate: rate(12 hours)
+  #         enabled: true
+  #   timeout: 300 # 5 minutes for timeout
+
+package:
+  include:
+    - "*"
+    - node_modules/puppeteer/.local-chromium/**
+  exclude:
+    - .git/**
+    - .serverless
+    - .gitignore
+  individually: true
+  excludeDevDependencies: true
